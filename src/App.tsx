@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/** @jsxImportSource @emotion/react */
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import PrivateRoute from './components/auth/PrivateRoute'
+import Navbar from './components/shared/Navbar'
+import ScrollToTop from './components/shared/ScrollToTop'
+import ApplyPage from './pages/Apply'
+import CardPage from './pages/Card'
+import HomePage from './pages/Home'
+import SigninPage from './pages/Signin'
+import SignupPage from './pages/Signup'
+import TestPage from './pages/Test'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <BrowserRouter>
+      <ScrollToTop/>
+      <Navbar/>
+      <Routes>
+        <Route path='/' Component={HomePage}/>
+        <Route path='/signin' Component={SigninPage}/>
+        <Route path='/signup' Component={SignupPage}/>
+        <Route path='/card/:id'Component={CardPage}/>
+        <Route path='/apply/:id' element={(
+          <PrivateRoute>
+            <ApplyPage/>
+          </PrivateRoute>
+        )}/>
+        <Route path='/test' Component={TestPage}/>
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
-export default App;
+export default App

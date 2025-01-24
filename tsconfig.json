@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,14 +13,23 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react"
   },
   "include": [
     "src"
-  ]
+  ],
+  "path" : {
+    "@/*":["src/*"],
+    "@pages/*": ["pages/*"],
+    "@components/*":["components/*"],
+    "@shared/*":["shared/*"],
+    "@models/*":["models/*"],
+    "@styles/*":["src/styles/*"]
+  }
 }
