@@ -1,17 +1,61 @@
-import { useState } from "react";
-import Apply from "../components/apply/Index";
-
-
+import { useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import useApplyCardMutation from '../components/apply/hooks/useApplyCardMutation'
+import usePollApplyStatus from '../components/apply/hooks/usePollApplyStatus'
+import Apply from '../components/apply/Index'
+import useUser from '../hooks/auth/useUser'
+import { APPLY_STATUS } from '../models/apply'
+import { updateApplyCard } from '../remote/apply'
 
 const ApplyPage = () => {
-  const [step, setStep] = useState(2)
- 
-  const handleSubmit = () => {
-    //TODO: 카드 신청
-  }
-  return (
-    <Apply step={step} onSubmit={handleSubmit}/>
-  );
-};
+  const navigate = useNavigate()
 
-export default ApplyPage;
+  const [readyToPoll, setReadyToPoll] = useState(false)
+
+  const user = useUser()
+  const { id } = useParams() as { id: string }
+
+  usePollApplyStatus({
+    onSuccess: async () => {
+      await updateApplyCard({
+        userId: user?.uid as string,
+        cardId: id,
+        applyValues: {
+          status: APPLY_STATUS.COMPLETE,
+        },
+      })
+      navigate('/apply/done?success=true', {
+        replace: true,
+      })
+    },
+    onError: async () => {
+      await updateApplyCard({
+        userId: user?.uid as string,
+        cardId: id,
+        applyValues: {
+          status: APPLY_STATUS.REJECT,
+        },
+      })
+      navigate('/apply/done?success=false', {
+        replace: true,
+      })
+    },
+    enabled: readyToPoll,
+  })
+  const { mutate, isLoading: 카드를신청중인가 } = useApplyCardMutation({
+    onSuccess: () => {
+      setReadyToPoll(true)
+    }, // 값이 추가되었을때 => 폴링 시작
+    onError: () => {
+      window.history.back()
+    }, // 실패했을 때 => 폴링 시작
+  })
+
+  if (readyToPoll || 카드를신청중인가) {
+    return <div>Loading...</div>
+  }
+
+  return <Apply onSubmit={mutate} />
+}
+
+export default ApplyPage
