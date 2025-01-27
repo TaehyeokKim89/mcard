@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom'
 import useUser from '../../hooks/auth/useUser'
 import { auth } from '../../remote/firebase'
 import { colors } from '../../styles/colorPalette'
+import MyImage from '../my/MyImage'
 import Button from './Button'
 import Flex from './Flex'
 
@@ -22,7 +23,11 @@ const Navbar = () => {
 
   const renderButton = useCallback(() => {
     if (user != null) {
-      return <Button onClick={handleLogout}>로그아웃</Button>
+      return (
+        <Link to="/my">
+          <MyImage size={40} />
+        </Link>
+      )
     }
     if (showSignButton) {
       return (
